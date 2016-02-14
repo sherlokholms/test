@@ -3,8 +3,19 @@
 сообщение логирования (строка, массив, объект, исключение). Логирование осуществляется с использованием принципа 
 полиморфизма - создан абстрактный класс Logger, в котором объявлен абстрактный метод abstract protected function write_to_log($message);
 */
+//Настройки соединения с БД
+$hostname_connect = "localhost";
+$database_connect = "log_database";
+$username_connect = "root";//Код написан для тестирования на локальном сервере (на реальном сервере имя пользователя разумеется будет другим)
+$password_connect = "";
 
-require_once 'config.php';//Подключение файла с настройками соединения с БД 
+$connect = mysql_pconnect($hostname_connect, $username_connect, $password_connect) or trigger_error(mysql_error(),E_USER_ERROR); 
+mysql_select_db($database_connect);
+// Вывод данных в кодировке
+@mysql_query ("set character_set_client='utf8'");  
+@mysql_query ("set character_set_results='utf8'");  
+@mysql_query ("set collation_connection='utf8_unicode_ci'");
+
 
 abstract class Logger
 {  
@@ -22,7 +33,8 @@ class File extends Logger
 			}
 			if(preg_match("/^([_a-z0-9A-Z]+)$/i",$name, $matches))//проверка имени файла (имя файла должно состоять только из латинских букв, цифр и знака подчеркивания)
 			{
-				$file_path = $_SERVER['DOCUMENT_ROOT'].'/logs/'.$name.'.txt';//местоположение лог-файла
+				$file_path = 'log.txt';
+				//$file_path = $_SERVER['DOCUMENT_ROOT'].'/logs/'.$name.'.txt';//местоположение лог-файла
 				$text = '['.date('Y-m-d H:i:s').']'." - ".htmlspecialchars($message)."\r\n";//Добавление даты и времени
 				$handle = fopen($file_path, "a+");// автоматически создается файл, если он не найден.
 				@flock($handle,LOCK_EX);
@@ -42,8 +54,8 @@ class Database extends Logger
 			$date = date('Y-m-d H:i:s');
 			$this->bdname="log_database";
 			$this->tbname="log_table";
-			(!mysql_pconnect("localhost", "root", "")) exit(mysql_error());
-            $r = mysql_query("CREATE DATABASE IF NOT EXISTS $this->bdname");// автоматически создается база данных, если она не найдена.
+			//(!mysql_pconnect("localhost", "root", "")) exit(mysql_error());
+            $r = mysql_query("CREATE DATABASE IF NOT EXISTS $this->bdname");// автоматически создается база данных, если она не найдена (только для локального сервера).
             if (!$r) exit(mysql_error());
             mysql_select_db($this->bdname);
             mysql_query('SET NAMES UTF8');
