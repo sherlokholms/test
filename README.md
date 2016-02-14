@@ -91,4 +91,3 @@ $class3 = new Stdout;
 $class1->write_to_log('new_message');echo "Лог был записан в текстовый файл log.txt";
 //$class2->write_to_log('new_message'); echo "Лог был записан в базу данных";	
 //$class3->write_to_log('new_message'); echo "Лог был записан в стандартный поток вывода stdout";		
-?>
