@@ -33,8 +33,7 @@ class File extends Logger
 			}
 			if(preg_match("/^([_a-z0-9A-Z]+)$/i",$name, $matches))//проверка имени файла (имя файла должно состоять только из латинских букв, цифр и знака подчеркивания)
 			{
-				$file_path = 'log.txt';
-				//$file_path = $_SERVER['DOCUMENT_ROOT'].'/logs/'.$name.'.txt';//местоположение лог-файла
+				$file_path = $_SERVER['DOCUMENT_ROOT'].'/logs/'.$name.'.txt';//местоположение лог-файла
 				$text = '['.date('Y-m-d H:i:s').']'." - ".htmlspecialchars($message)."\r\n";//Добавление даты и времени
 				$handle = fopen($file_path, "a+");// автоматически создается файл, если он не найден.
 				@flock($handle,LOCK_EX);
@@ -54,7 +53,7 @@ class Database extends Logger
 			$date = date('Y-m-d H:i:s');
 			$this->bdname="log_database";
 			$this->tbname="log_table";
-			//(!mysql_pconnect("localhost", "root", "")) exit(mysql_error());
+			(!mysql_pconnect("localhost", "root", "")) exit(mysql_error());
             $r = mysql_query("CREATE DATABASE IF NOT EXISTS $this->bdname");// автоматически создается база данных, если она не найдена (только для локального сервера).
             if (!$r) exit(mysql_error());
             mysql_select_db($this->bdname);
